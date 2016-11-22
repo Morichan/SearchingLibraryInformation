@@ -1,1 +1,2 @@
-# SearchingLibraryInformation
+# 図書検索システム
+これは国立国会図書館のAPIを経由して、図書情報を出力するシステムです。
