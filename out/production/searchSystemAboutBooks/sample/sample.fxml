@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <BorderPane layoutX="21.0" layoutY="14.0" prefHeight="600.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#closeSystemOnFileMenu" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#deleteRetrievalResultTextAreaOnEditMenu" text="Retrieval Result Delete" />
+                        <MenuItem mnemonicParsing="false" onAction="#deleteSearchWindowsTextFieldOnEditMenu" text="Search Windows Delete" />
+                        <MenuItem mnemonicParsing="false" onAction="#deleteAllTextAreaAndTextFieldOnEditMenu" text="All Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#aboutSearchingLibraryInformationOnHelpMenu" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <left>
+            <VBox prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <GridPane depthTest="DISABLE" prefHeight="277.0" prefWidth="200.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="71.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="266.0" minWidth="10.0" prefWidth="128.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="62.0" minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="82.0" minHeight="10.0" prefHeight="58.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="105.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="54.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="17.0" prefWidth="75.0" text="タイトル" />
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="104.0" text="著者" GridPane.rowIndex="1" />
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="69.0" text="ISBN" GridPane.rowIndex="2" />
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="118.0" text="出版社" GridPane.rowIndex="3" />
+                        <Label alignment="TOP_CENTER" prefHeight="14.0" prefWidth="72.0" text="出版年" GridPane.rowIndex="4" />
+                        <TextField fx:id="titleTextField" prefHeight="25.0" prefWidth="108.0" promptText="初めてのPerl" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin></TextField>
+                        <TextField fx:id="creatorTextField" promptText="Randal L. Schwartz" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin></TextField>
+                        <TextField fx:id="isbnTextField" promptText="9784873115672" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin></TextField>
+                        <TextField fx:id="publisherTextField" prefHeight="25.0" prefWidth="129.0" promptText="オライリー・ジャパン" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin></TextField>
+                        <VBox prefHeight="48.0" prefWidth="128.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <children>
+                              <HBox prefHeight="37.0" prefWidth="94.0">
+                                 <children>
+                                    <TextField fx:id="issuedFromYearTextField" prefHeight="6.0" prefWidth="88.0" promptText="2010" />
+                                    <Label prefHeight="25.0" prefWidth="38.0" text="年から">
+                                       <opaqueInsets>
+                                          <Insets bottom="20.0" />
+                                       </opaqueInsets></Label>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <TextField fx:id="issuedUntilYearTextField" prefHeight="0.0" prefWidth="88.0" promptText="2015" />
+                                    <Label prefHeight="25.0" prefWidth="35.0" text="年まで" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <opaqueInsets>
+                        <Insets top="30.0" />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </GridPane>
+                  <GridPane prefHeight="43.0" prefWidth="200.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="0.0" prefWidth="27.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="173.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="63.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#searchBooks" prefHeight="32.0" prefWidth="147.0" text="検索" GridPane.columnIndex="1">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets></Button>
+                     </children>
+                  </GridPane>
+                  <TabPane prefHeight="233.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                     <tabs>
+                        <Tab text="基本設定">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="181.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox layoutY="-1.0" prefHeight="206.0" prefWidth="200.0" AnchorPane.bottomAnchor="-31.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label prefHeight="17.0" prefWidth="244.0" text="テキストエリアについて" />
+                                          <CheckBox fx:id="textAreaMemoryCheckBox" mnemonicParsing="false" prefHeight="31.0" prefWidth="190.0" text="テキストエリアの内容を記憶" textAlignment="RIGHT">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                          </CheckBox>
+                                          <Label text="雑誌などの扱いについて" />
+                                          <CheckBox fx:id="noIsbnBookIsOutputedCheckBox" mnemonicParsing="false" prefHeight="34.0" prefWidth="199.0" text="ISBNの登録がない書籍も表示" />
+                                       </children>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="出力内容">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox layoutY="-43.0" prefHeight="226.0" prefWidth="200.0" AnchorPane.bottomAnchor="-69.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label text="出力する内容を選択する" />
+                                          <CheckBox fx:id="outputTitleCheckBox" mnemonicParsing="false" selected="true" text="書籍タイトル" />
+                                          <CheckBox fx:id="outputCreatorCheckBox" mnemonicParsing="false" selected="true" text="著者" />
+                                          <CheckBox fx:id="outputIsbnCheckBox" mnemonicParsing="false" selected="true" text="ISBN" />
+                                          <CheckBox fx:id="outputPriceCheckBox" mnemonicParsing="false" selected="true" text="価格" />
+                                          <CheckBox fx:id="outputPublisherCheckBox" mnemonicParsing="false" selected="true" text="出版社" />
+                                          <CheckBox fx:id="outputIssuedCheckBox" mnemonicParsing="false" selected="true" text="出版年" />
+                                          <CheckBox fx:id="outputUriFromNdlCheckBox" mnemonicParsing="false" text="国立国会図書館書籍サイトのURL" />
+                                          <CheckBox fx:id="outputDescriptionCheckBox" mnemonicParsing="false" text="その他の詳細情報" />
+                                          <CheckBox fx:id="outputUriFromAmazonSearchCheckBox" mnemonicParsing="false" text="Amazon検索結果のURL" />
+                                       </children>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+                  <HBox prefHeight="25.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="numberOfRecordLabel" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="143.0" />
+                        <Label alignment="CENTER" prefHeight="42.0" prefWidth="36.0" text="項目" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </left>
+          <center>
+              <TextArea fx:id="outputRetrievalResultTextArea" prefHeight="575.0" prefWidth="417.0" promptText="タイトル：&#13;著者：&#13;ISBN：&#13;価格：&#13;出版社：&#13;出版年：&#13;&#13;全ての項目を埋める必要はありません。" wrapText="true" BorderPane.alignment="CENTER">
+                  <opaqueInsets>
+                      <Insets />
+                  </opaqueInsets>
+                  <BorderPane.margin>
+                      <Insets bottom="2.0" right="2.0" top="2.0" />
+                  </BorderPane.margin>
+              </TextArea>
+          </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
