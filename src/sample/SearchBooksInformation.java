@@ -9,8 +9,15 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sun.org.apache.xml.internal.resolver.Catalog.URI;
 
 /**
  * Created by Owner1-kat_lab on 2016/11/18.
@@ -124,10 +131,11 @@ public class SearchBooksInformation {
         numberOfRecord = "0";
         query = setQuery(queryArray, "&query=");
 
-        //uri = "http://iss.ndl.go.jp/api/sru?operation=searchRetrieve&query=title%3d\"perl\"%20AND%20creator%3d\"phoenix\"&recordSchema=dcndl_simple";
+        // uri = "http://iss.ndl.go.jp/api/sru?operation=searchRetrieve&query=title%3d\"perl\"%20AND%20creator%3d\"phoenix\"&recordSchema=dcndl_simple";
         uri = "http://iss.ndl.go.jp/api/sru?operation=searchRetrieve" + query + recordSchema + maximumRecords;
         try {
-            System.out.println(uri);
+            System.out.println("Encoded URL: " + uri);
+            System.out.println("Decoded URL: " + URLDecoder.decode(uri, "UTF-8"));
             document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(uri);
         } catch (IOException e) {
             System.out.println("IOError");
@@ -138,9 +146,10 @@ public class SearchBooksInformation {
         } catch (ParserConfigurationException e) {
             System.out.println("ParserError");
             e.printStackTrace();
+        } finally {
+            searchedInformation = setSearchedInformation(document.getDocumentElement(), dcItemArray);
         }
 
-        searchedInformation = setSearchedInformation(document.getDocumentElement(), dcItemArray);
     }
 
     /**
@@ -154,7 +163,11 @@ public class SearchBooksInformation {
         String information = "";
         NodeList rootChildren = root.getChildNodes();
         NodeList recordsNodeList = searchChildrenNode(rootChildren, "records");
-        numberOfRecord = searchChildrenNode(rootChildren, "numberOfRecords").item(0).getTextContent();
+        NodeList numberOfRecordNodeList = searchChildrenNode(rootChildren, "numberOfRecords");
+        if(numberOfRecordNodeList == null) {
+            return "Error, There queries are invalid.";
+        }
+        numberOfRecord = numberOfRecordNodeList.item(0).getTextContent();
         if (numberOfRecord.equals("0")) {
             return "Error, There are not any records.";
         }
@@ -209,6 +222,11 @@ public class SearchBooksInformation {
             String[] queryElement = q.split("%3d", 0);
             for(int i = 1; i < queryElement.length; i++) {
                 for(String qItem: queryElement[1].split(" ", 0)) {
+                    // 文字コードを変換しないと、jarファイルやexeファイル上では正しく動作しない
+                    try {
+                        qItem = URLEncoder.encode(qItem, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {}
+
                     if (firstQueryFlag) {
                         _query = _query + queryElement[0] + "%3d\"" + qItem + "\"";
                         firstQueryFlag = false;

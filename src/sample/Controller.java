@@ -140,8 +140,8 @@ public class Controller implements Initializable {
     public void aboutSearchingLibraryInformationOnHelpMenu() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("これは何？");
-        alert.setHeaderText("図書検索システム");
-        String comment = "これは国立国会図書館のAPIを経由して、図書情報を出力するシステムです。\n\n";
+        alert.setHeaderText("図書情報検索システム");
+        String comment = "これは国立国会図書館サーチAPIを経由して、図書情報を検索するシステムです。\n\n";
         comment += "https://github.com/Morichan/SearchingLibraryInformation";
         alert.setContentText(comment);
 
@@ -150,12 +150,12 @@ public class Controller implements Initializable {
 
     public void openAlert(String maxNumber) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setWidth(600);
-        alert.setTitle("デフォルトの最大検索数の上限は200です。");
+        alert.setTitle("デフォルトの最大検索数の上限は500です。");
         alert.setHeaderText("検索結果が最大検索数の上限に達ました。");
-        String contentText = "デフォルトの最大検索数は200ですが、今回の検索数は最大で" + maxNumber + "になる可能性があります。\n";
+        String contentText = "デフォルトの検索数は200ですが、今回の検索数は最大で" + maxNumber + "になる可能性があります。\n";
         contentText += "全ての検索結果を再び検索し直したい場合は OK を押してください。\n";
-        contentText += "なお、検索時間が大幅に掛かる可能性があります。\n\n";
+        contentText += "その場合、検索時間が大幅に掛かる可能性があります。\n";
+        contentText += "なお、国立国会図書館サーチAPIの検索負荷回避のための制約により、500件を超える検索結果は取得できません。\n\n";
         contentText += "取り消しを押した場合、再検索は行いません。\n";
         contentText += "検索項目を増やして検索結果を減らしてください。";
         alert.setContentText(contentText);
