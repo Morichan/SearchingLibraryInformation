@@ -220,12 +220,24 @@ public class SearchBooksInformation {
 
         for (String q : array) {
             String[] queryElement = q.split("%3d", 0);
-            for(int i = 1; i < queryElement.length; i++) {
+            int queryElementCount = 0;
+            // 検索文字列中に"%3d"という文字列が含まれていた場合の対処法
+            for(int i = 2; i < queryElement.length; i++) {
+                queryElement[1] += queryElement[i];
+                queryElementCount++;
+            }
+
+            // 検索文字列がそもそも存在しなければ、このfor文内は無視
+            for(int i = 1; i < queryElement.length - queryElementCount; i++) {
+                queryElement[1] = queryElement[1].replaceAll("[-()~^|_{}:;@`/<>,.]", " "); // 記号消去
                 for(String qItem: queryElement[1].split(" ", 0)) {
                     // 文字コードを変換しないと、jarファイルやexeファイル上では正しく動作しない
                     try {
                         qItem = URLEncoder.encode(qItem, "UTF-8");
                     } catch (UnsupportedEncodingException e) {}
+                    if(qItem.isEmpty()) { // 文字分割でスペース2つも分割されてしまうため、その間の空っぽ文字列を無視
+                        continue;
+                    }
 
                     if (firstQueryFlag) {
                         _query = _query + queryElement[0] + "%3d\"" + qItem + "\"";
