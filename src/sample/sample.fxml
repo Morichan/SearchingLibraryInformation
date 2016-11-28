@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
@@ -27,14 +28,14 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#closeSystemOnFileMenu" text="Close" />
+                    <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#closeSystemOnFileMenu" text="Close" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#deleteRetrievalResultTextAreaOnEditMenu" text="Retrieval Result Delete" />
-                        <MenuItem mnemonicParsing="false" onAction="#deleteSearchWindowsTextFieldOnEditMenu" text="Search Windows Delete" />
-                        <MenuItem mnemonicParsing="false" onAction="#deleteAllTextAreaAndTextFieldOnEditMenu" text="All Delete" />
+                        <MenuItem fx:id="searchWindowsDeleteMenuItem" mnemonicParsing="false" onAction="#deleteSearchWindowsTextFieldOnEditMenu" text="Search Windows Delete" />
+                        <MenuItem fx:id="allDeleteMenuItem" mnemonicParsing="false" onAction="#deleteAllTextAreaAndTextFieldOnEditMenu" text="All Delete" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -121,13 +122,13 @@
                       <RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="63.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button mnemonicParsing="false" onAction="#searchBooks" prefHeight="32.0" prefWidth="147.0" text="検索" GridPane.columnIndex="1">
+                        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchBooks" prefHeight="32.0" prefWidth="147.0" text="検索" GridPane.columnIndex="1">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets></Button>
                      </children>
                   </GridPane>
-                  <TabPane prefHeight="233.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane prefHeight="232.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                      <tabs>
                         <Tab text="基本設定">
                            <content>
@@ -179,10 +180,11 @@
                         </Tab>
                      </tabs>
                   </TabPane>
-                  <HBox prefHeight="25.0" prefWidth="200.0">
+                  <HBox prefHeight="29.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="numberOfRecordLabel" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="143.0" />
-                        <Label alignment="CENTER" prefHeight="42.0" prefWidth="36.0" text="項目" />
+                        <ProgressIndicator fx:id="searchingWaitProgressIndeterminate" prefHeight="28.0" prefWidth="36.0" visible="false" />
+                        <Label fx:id="numberOfRecordLabel" alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="138.0" />
+                        <Label prefHeight="28.0" prefWidth="40.0" text="項目" />
                      </children>
                   </HBox>
                </children>

@@ -1,19 +1,41 @@
 package sample;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Controller implements Initializable {
     SearchBooksInformation searchBooksInformation = new SearchBooksInformation();
+    ExecutorService service = null;
+    Task<Void> task = null;
+
+    @FXML
+    private MenuItem searchWindowsDeleteMenuItem;
+    @FXML
+    private MenuItem allDeleteMenuItem;
+    @FXML
+    private MenuItem closeMenuItem;
+
+    @FXML
+    private Button searchButton;
 
     @FXML
     private TextField titleTextField;
@@ -54,13 +76,75 @@ public class Controller implements Initializable {
     private CheckBox outputUriFromAmazonSearchCheckBox;
 
     @FXML
+    private ProgressIndicator searchingWaitProgressIndeterminate;
+    @FXML
     private Label numberOfRecordLabel;
 
     private String information = "";
     private String oldInformation = "";
+    private String numberOfRecord = "";
 
     @FXML
     public void searchBooks() {
+        service = Executors.newSingleThreadExecutor();
+
+        task = new Task<Void>() {
+            @Override
+            public Void call() {
+                searchingWaitProgressIndeterminate.setVisible(true);
+                setAllItemsNotTouchedDuringSearchDisable(true);
+                searchLibraryInformation();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                searchingWaitProgressIndeterminate.setVisible(false);
+                setAllItemsNotTouchedDuringSearchDisable(false);
+                numberOfRecordLabel.setText(numberOfRecord);
+                service.shutdown();
+            }
+
+            @Override
+            protected void failed() {
+                searchingWaitProgressIndeterminate.setVisible(false);
+                setAllItemsNotTouchedDuringSearchDisable(false);
+                numberOfRecordLabel.setText(numberOfRecord);
+                service.shutdown();
+                openAlert(searchBooksInformation.getNumberOfRecord());
+            }
+        };
+
+        // タスクの状態が変化したら出力する
+        task.stateProperty().addListener(new ChangeListener<Worker.State>() {
+            @Override
+            public void changed(ObservableValue<? extends Worker.State> value, Worker.State oldState, Worker.State newState) {
+                System.out.println("New: " + newState + " Old: " + oldState);
+            }
+        });
+
+        // 強制終了時には並列処理も強制終了かけてあげないと裏でずっと動いたままになってしまう
+        // これでもタスクは暫く残ったままだが、URL先のデータを取得したくらいの時間が経過すると消える
+        task.addEventHandler(WorkerStateEvent.WORKER_STATE_CANCELLED,
+                new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        service.shutdown();
+                    }
+                });
+
+        service.submit(task);
+    }
+
+    public void destroy() {
+        if(service != null) {
+            task.cancel();
+        }
+    }
+
+    public void searchLibraryInformation() {
+        numberOfRecord = "";
+
         searchBooksInformation.setTitle(titleTextField.getText());
         searchBooksInformation.setCreator(creatorTextField.getText());
         searchBooksInformation.setIsbn(isbnTextField.getText());
@@ -79,36 +163,36 @@ public class Controller implements Initializable {
         searchBooksInformation.setAnswerDescription(outputDescriptionCheckBox.isSelected());
         searchBooksInformation.setAnswerUriFromAmazonSearch(outputUriFromAmazonSearchCheckBox.isSelected());
 
-        searchBooksInformation.isSearchedFromNationalDietLibrary();
-
-        information = searchBooksInformation.getSearchedInformation();
-
         if(textAreaMemoryCheckBox.isSelected()) {
             oldInformation = outputRetrievalResultTextArea.getText() + "\n";
         } else {
             oldInformation = "";
         }
 
+        // 最も時間がかかるメソッド、主に国立国会図書館サーチAPIのせいで
+        searchBooksInformation.isSearchedFromNationalDietLibrary();
+
+        information = searchBooksInformation.getSearchedInformation();
+
         outputRetrievalResultTextArea.setText(oldInformation + information + "\n");
 
-        String numberOfRecord = searchBooksInformation.getOutputRecordCount() + " (" + searchBooksInformation.getNumberOfRecord() + ")";
+        numberOfRecord = searchBooksInformation.getOutputRecordCount() + " (" + searchBooksInformation.getNumberOfRecord() + ") ";
         if(searchBooksInformation.getNumberOfRecord().equals(Integer.toString(searchBooksInformation.getOutputRecordCount()))) {
             numberOfRecord = searchBooksInformation.getNumberOfRecord();
         }
-        numberOfRecordLabel.setText(numberOfRecord);
-        if(Integer.parseInt(searchBooksInformation.getNumberOfRecord()) > searchBooksInformation.getMaximumRecords()) {
-            openAlert(searchBooksInformation.getNumberOfRecord());
-        }
 
-        if(searchBooksInformation.getMaximumRecords() != 200) {
-            searchBooksInformation.setMaximumRecords(200);
-        }
         titleTextField.setPromptText("");
         creatorTextField.setPromptText("");
         isbnTextField.setPromptText("");
         publisherTextField.setPromptText("");
         issuedFromYearTextField.setPromptText("");
         issuedUntilYearTextField.setPromptText("");
+
+        if(Integer.parseInt(searchBooksInformation.getNumberOfRecord()) > searchBooksInformation.getMaximumRecords()) {
+            searchBooksInformation.setMaximumRecords(200);
+            openAlert(searchBooksInformation.getNumberOfRecord()); // これはtask.failed()を呼び出すきっかけとなる
+        }
+        searchBooksInformation.setMaximumRecords(200);
     }
 
     @FXML
@@ -165,6 +249,21 @@ public class Controller implements Initializable {
             searchBooksInformation.setMaximumRecords(Integer.parseInt(maxNumber));
             searchBooks();
         }
+    }
+
+    public void setAllItemsNotTouchedDuringSearchDisable(boolean bool) {
+        searchButton.setDisable(bool);
+
+        titleTextField.setDisable(bool);
+        creatorTextField.setDisable(bool);
+        isbnTextField.setDisable(bool);
+        publisherTextField.setDisable(bool);
+        issuedFromYearTextField.setDisable(bool);
+        issuedUntilYearTextField.setDisable(bool);
+
+        closeMenuItem.setDisable(bool);
+        searchWindowsDeleteMenuItem.setDisable(bool);
+        allDeleteMenuItem.setDisable(bool);
     }
 
     @Override
