@@ -76,10 +76,14 @@ public class Controller implements Initializable {
     private CheckBox outputUriFromAmazonSearchCheckBox;
 
     @FXML
+    private TabPane preferenceTabPane;
+
+    @FXML
     private ProgressIndicator searchingWaitProgressIndeterminate;
     @FXML
     private Label numberOfRecordLabel;
 
+    private boolean overMaxSearchListFlag = false;
     private String information = "";
     private String oldInformation = "";
     private String numberOfRecord = "";
@@ -91,7 +95,9 @@ public class Controller implements Initializable {
         task = new Task<Void>() {
             @Override
             public Void call() {
+                overMaxSearchListFlag = false;
                 searchingWaitProgressIndeterminate.setVisible(true);
+                preferenceTabPane.setDisable(true);
                 setAllItemsNotTouchedDuringSearchDisable(true);
                 searchLibraryInformation();
                 return null;
@@ -100,18 +106,23 @@ public class Controller implements Initializable {
             @Override
             protected void succeeded() {
                 searchingWaitProgressIndeterminate.setVisible(false);
+                preferenceTabPane.setDisable(false);
                 setAllItemsNotTouchedDuringSearchDisable(false);
                 numberOfRecordLabel.setText(numberOfRecord);
                 service.shutdown();
+                if(overMaxSearchListFlag) {
+                    openAlert(searchBooksInformation.getNumberOfRecord());
+                }
             }
 
             @Override
             protected void failed() {
                 searchingWaitProgressIndeterminate.setVisible(false);
+                preferenceTabPane.setDisable(false);
                 setAllItemsNotTouchedDuringSearchDisable(false);
                 numberOfRecordLabel.setText(numberOfRecord);
+                System.out.println("failed!!!");
                 service.shutdown();
-                openAlert(searchBooksInformation.getNumberOfRecord());
             }
         };
 
@@ -172,13 +183,12 @@ public class Controller implements Initializable {
         // 最も時間がかかるメソッド、主に国立国会図書館サーチAPIのせいで
         searchBooksInformation.isSearchedFromNationalDietLibrary();
 
+        outputRetrievalResultTextArea.clear();
         information = searchBooksInformation.getSearchedInformation();
-
-        outputRetrievalResultTextArea.setText(oldInformation + information + "\n");
 
         numberOfRecord = searchBooksInformation.getOutputRecordCount() + " (" + searchBooksInformation.getNumberOfRecord() + ") ";
         if(searchBooksInformation.getNumberOfRecord().equals(Integer.toString(searchBooksInformation.getOutputRecordCount()))) {
-            numberOfRecord = searchBooksInformation.getNumberOfRecord();
+            numberOfRecord = searchBooksInformation.getNumberOfRecord() + " ";
         }
 
         titleTextField.setPromptText("");
@@ -190,8 +200,9 @@ public class Controller implements Initializable {
 
         if(Integer.parseInt(searchBooksInformation.getNumberOfRecord()) > searchBooksInformation.getMaximumRecords()) {
             searchBooksInformation.setMaximumRecords(200);
-            openAlert(searchBooksInformation.getNumberOfRecord()); // これはtask.failed()を呼び出すきっかけとなる
+            overMaxSearchListFlag = true; // これはopenAlert()を呼び出すきっかけとなる
         }
+        outputRetrievalResultTextArea.setText(oldInformation + information + "\n");
         searchBooksInformation.setMaximumRecords(200);
     }
 

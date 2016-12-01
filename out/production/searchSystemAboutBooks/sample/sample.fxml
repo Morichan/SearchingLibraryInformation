@@ -128,7 +128,7 @@
                            </opaqueInsets></Button>
                      </children>
                   </GridPane>
-                  <TabPane prefHeight="232.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane fx:id="preferenceTabPane" prefHeight="232.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                      <tabs>
                         <Tab text="基本設定">
                            <content>
