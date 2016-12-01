@@ -33,7 +33,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#deleteRetrievalResultTextAreaOnEditMenu" text="Retrieval Result Delete" />
+                    <MenuItem fx:id="retrievalResultDeleteMenuItem" mnemonicParsing="false" onAction="#deleteRetrievalResultTextAreaOnEditMenu" text="Retrieval Result Delete" />
                         <MenuItem fx:id="searchWindowsDeleteMenuItem" mnemonicParsing="false" onAction="#deleteSearchWindowsTextFieldOnEditMenu" text="Search Windows Delete" />
                         <MenuItem fx:id="allDeleteMenuItem" mnemonicParsing="false" onAction="#deleteAllTextAreaAndTextFieldOnEditMenu" text="All Delete" />
                   </items>

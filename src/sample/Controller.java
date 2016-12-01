@@ -28,11 +28,13 @@ public class Controller implements Initializable {
     Task<Void> task = null;
 
     @FXML
+    private MenuItem closeMenuItem;
+    @FXML
+    private MenuItem retrievalResultDeleteMenuItem;
+    @FXML
     private MenuItem searchWindowsDeleteMenuItem;
     @FXML
     private MenuItem allDeleteMenuItem;
-    @FXML
-    private MenuItem closeMenuItem;
 
     @FXML
     private Button searchButton;
@@ -271,8 +273,10 @@ public class Controller implements Initializable {
         publisherTextField.setDisable(bool);
         issuedFromYearTextField.setDisable(bool);
         issuedUntilYearTextField.setDisable(bool);
+        outputRetrievalResultTextArea.setDisable(bool);
 
         closeMenuItem.setDisable(bool);
+        retrievalResultDeleteMenuItem.setDisable(bool);
         searchWindowsDeleteMenuItem.setDisable(bool);
         allDeleteMenuItem.setDisable(bool);
     }
